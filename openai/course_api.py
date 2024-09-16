@@ -1,6 +1,14 @@
 # 코스 생성 - 여행지 순서 배치
 
+import argparse
 import openai
+
+# ArgumentParser 객체 생성
+parser = argparse.ArgumentParser(description="Process days and placeList")
+parser.add_argument('--days', type=int, required=True, help="Number of days")
+parser.add_argument('--placeList', type=lambda s: s.split(','), required=True, help="Comma-separated list of places")
+
+args = parser.parse_args()
 
 # with 구문을 사용하여 파일을 열고 닫음
 with open("openai/openai-key.txt", "r", encoding="utf-8") as file:
@@ -10,8 +18,8 @@ with open("openai/openai-key.txt", "r", encoding="utf-8") as file:
 openai.api_key = openai_key
 
 # user input 생성
-days = 3
-placeList = ["윗세오름", "군산오름 등산로 입구", "강정천", "한라산", "소정방폭포", "서귀포 치유의 숲"]
+days = args.days
+placeList = args.placeList
 
 message = f'''
 "request" 
@@ -39,7 +47,7 @@ Format the response as a JSON object with the following structure:
 }}
 '''
 
-# GPT-4 모델 사용 예시
+# GPT-3.5 모델 호출
 response = openai.ChatCompletion.create(
     model="gpt-3.5-turbo",
     messages=[
