@@ -98,11 +98,12 @@ def predict_accommodation(model, df, user_id, num):
 
 
 def main():
-
+    
     user_id = sys.argv[1] # 사용자 아이디
     sido = sys.argv[2] # 여행지 시도
     si = re.split(r',\s*', sys.argv[3].strip('[]')) # 여행지 시(군) 리스트
     day = int(sys.argv[4]) # 여행일수
+    styleList = [3, 3, 4, 5] # FIXME: 여행스타일 나중에 입력받아야함
 
     # 여행지 / 숙박지 추천 갯수
     if day == 1:  #당일치기
@@ -124,12 +125,32 @@ def main():
     
     elif sido in ["제주도"]:
       region = 'H'
-    
 
     # 지역별 추천 모델과 데이터 불러오기
     place_model, accommodation_model = load_model(region)
     df1 , df2 = load_data(si)
-
+    
+    # 여행 스타일 별 더미데이터 삽입
+    dummy_df = pd.read_csv('data/style/dummy_data.csv')
+    categories = [['자연', '도시'], ['관광', '휴식'], ['사진O', '사진X'], ['럭셔리숙박', '가성비숙박']]
+    
+    for i in range(4):
+        style = styleList[i]
+        a, b = categories[i]
+        
+        random_rows_a = dummy_df[dummy_df['category'] == a].sample(n=2)
+        random_rows_b = dummy_df[dummy_df['category'] == b].sample(n=2)
+        random_rows_a['rating'] = 6-style
+        random_rows_b['rating'] = style
+        random_rows_a['userID'] = user_id
+        random_rows_b['userID'] = user_id
+        random_rows_a = random_rows_a.drop(columns=['category'])
+        random_rows_b = random_rows_b.drop(columns=['category'])
+        
+        if i < 3:
+            df1 = pd.concat([df1, random_rows_a, random_rows_b], ignore_index=True)
+        else: 
+            df2 = pd.concat([df2, random_rows_a, random_rows_b], ignore_index=True)
     
     # 여행지 추천 모델
     place_predictions = predict_place(place_model, df1, user_id, place_num)
