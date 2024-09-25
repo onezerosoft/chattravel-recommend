@@ -45,17 +45,21 @@ def load_data(si):
     return df1, df2
 
 
-def predict_place(model, df, user_id, num):
+def predict_place(model, df, user_id, num, si):
     
     items_to_predict = df['itemID'].unique()
 
     # 사용자가 방문하지 않은 아이템에 대한 예측 생성
-    #all_items = df1['itemID'].unique()
-    #user_items = df1[df1['userID'] == user_id]['itemID'].unique()
-    #items_to_predict = [item for item in all_items if item not in user_items]
+    all_items = df['itemID'].unique()
+    user_items = df[df['userID'] == user_id]['itemID'].unique()
+    items_to_predict = [item for item in all_items if item not in user_items]
 
     # 각 아이템에 대해 예측 수행
     predictions = [model.predict(user_id, item) for item in items_to_predict]
+
+    # SI 필터링
+    #print(predictions)
+    #predictions = predictions[predictions['SI'].isin(si)]
 
     # 예측된 점수로 정렬하여 상위 N개의 아이템 추천
     top_n_predictions = sorted(predictions, key=lambda x: x.est, reverse=True)[:num]
@@ -71,16 +75,20 @@ def predict_place(model, df, user_id, num):
     return result
 
 
-def predict_accommodation(model, df, user_id, num):
+def predict_accommodation(model, df, user_id, num, si):
     items_to_predict = df['itemID'].unique()
 
     # 사용자가 방문하지 않은 아이템에 대한 예측 생성
-    #all_items = df1['itemID'].unique()
-    #user_items = df1[df1['userID'] == user_id]['itemID'].unique()
-    #items_to_predict = [item for item in all_items if item not in user_items]
+    all_items = df['itemID'].unique()
+    user_items = df[df['userID'] == user_id]['itemID'].unique()
+    items_to_predict = [item for item in all_items if item not in user_items]
 
     # 각 아이템에 대해 예측 수행
     predictions = [model.predict(user_id, item) for item in items_to_predict]
+
+    # SI 필터링
+    #print(predictions)
+    #predictions = predictions[predictions['SI'].isin(si)]
 
     # 예측된 점수로 정렬하여 상위 N개의 아이템 추천
     top_n_predictions = sorted(predictions, key=lambda x: x.est, reverse=True)[:num]
@@ -103,14 +111,14 @@ def main():
     sido = sys.argv[2] # 여행지 시도
     si = re.split(r',\s*', sys.argv[3].strip('[]')) # 여행지 시(군) 리스트
     day = int(sys.argv[4]) # 여행일수
-    styleList = [3, 3, 4, 5] # FIXME: 여행스타일 나중에 입력받아야함
-
+    styleList = list(map(int, re.split(r',\s*', sys.argv[5].strip('[]'))))
+    
     # 여행지 / 숙박지 추천 갯수
     if day == 1:  #당일치기
       place_num = 3 
       accom_num = 0 
     else:
-      place_num = day * 3 - 2
+      place_num = day * 3 - 2 
       accom_num = 1     
 
     # region
@@ -138,8 +146,8 @@ def main():
         style = styleList[i]
         a, b = categories[i]
         
-        random_rows_a = dummy_df[dummy_df['category'] == a].sample(n=2)
-        random_rows_b = dummy_df[dummy_df['category'] == b].sample(n=2)
+        random_rows_a = dummy_df[dummy_df['category'] == a].sample(n=20)
+        random_rows_b = dummy_df[dummy_df['category'] == b].sample(n=20)
         random_rows_a['rating'] = 6-style
         random_rows_b['rating'] = style
         random_rows_a['userID'] = user_id
@@ -153,17 +161,17 @@ def main():
             df2 = pd.concat([df2, random_rows_a, random_rows_b], ignore_index=True)
     
     # 여행지 추천 모델
-    place_predictions = predict_place(place_model, df1, user_id, place_num)
+    place_predictions = predict_place(place_model, df1, user_id, place_num, si)
 
     # 숙박 장소 추천 모델
-    accommodation_predictions = predict_accommodation(accommodation_model, df2, user_id, accom_num)
+    accommodation_predictions = predict_accommodation(accommodation_model, df2, user_id, accom_num, si)
 
     result = {
        "place": place_predictions,
        "accommodation": accommodation_predictions
     }
 
-    print(json.dump(result, ensure_ascii=False))
+    print(json.dumps(result, ensure_ascii=False))
 
 if __name__ == "__main__":
     main()
