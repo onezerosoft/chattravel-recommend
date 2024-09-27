@@ -6,24 +6,24 @@ import re
 import json
 
 def load_model(region):
-    base_path = 'model'
+    base_path = 'chattravel-recommend/src/model'
     
     if region == 'E':  # 수도권
-        place_model_path = os.path.join(base_path, '여행지추천모델', 'svd_model_capital.pkl')
-        accommodation_model_path = os.path.join(base_path, '숙소추천모델', 'latent_model_capital.pkl')
+        place_model_path = os.path.join(base_path, 'place', 'svd_model_capital.pkl')
+        accommodation_model_path = os.path.join(base_path, 'accomodation', 'latent_model_capital.pkl')
     
 
     elif region == 'F':  # 동부권
-        place_model_path = os.path.join(base_path, '여행지추천모델', 'svd_model_east.pkl')
-        accommodation_model_path = os.path.join(base_path, '숙소추천모델', 'latent_model_east.pkl')
+        place_model_path = os.path.join(base_path, 'place', 'svd_model_east.pkl')
+        accommodation_model_path = os.path.join(base_path, 'accomodation', 'latent_model_east.pkl')
     
     elif region == 'G':  # 서부권
-        place_model_path = os.path.join(base_path, '여행지추천모델', 'svd_model_west.pkl')
-        accommodation_model_path = os.path.join(base_path, '숙소추천모델', 'latent_model_west.pkl')
+        place_model_path = os.path.join(base_path, 'place', 'svd_model_west.pkl')
+        accommodation_model_path = os.path.join(base_path, 'accomodation', 'latent_model_west.pkl')
     
     elif region == 'H':  # 제주
-        place_model_path = os.path.join(base_path, '여행지추천모델', 'svd_model_jeju.pkl')
-        accommodation_model_path = os.path.join(base_path, '숙소추천모델', 'latent_model_jeju.pkl')
+        place_model_path = os.path.join(base_path, 'place', 'svd_model_jeju.pkl')
+        accommodation_model_path = os.path.join(base_path, 'accomodation', 'latent_model_jeju.pkl')
     
     else:
         raise ValueError("Invalid region code. Please use 'E', 'F', 'G', or 'H'.")
@@ -36,8 +36,8 @@ def load_model(region):
 
 def load_data(si):
     
-    df1 = pd.read_csv('data/preprocessed/여행지/df_total.csv')
-    df2 = pd.read_csv('data/preprocessed/숙박/df_total.csv')
+    df1 = pd.read_csv('chattravel-recommend/src/data/preprocessed/place/df_total.csv')
+    df2 = pd.read_csv('chattravel-recommend/src/data/preprocessed/accomodation/df_total.csv')
         
     df1 = df1[df1['SI'].isin(si)]
     df2 = df2[df2['SI'].isin(si)]
@@ -122,7 +122,7 @@ def main():
       accom_num = 1     
 
     # region
-    if sido in ["서울", "경기도", "강원도"]:
+    if sido in ["서울", "경기도", "강원도", "수도권"]:
       region = 'E'
 
     elif sido in ["경상북도", "경상남도"]:
@@ -139,7 +139,7 @@ def main():
     df1 , df2 = load_data(si)
     
     # 여행 스타일 별 더미데이터 삽입
-    dummy_df = pd.read_csv('data/style/dummy_data.csv')
+    dummy_df = pd.read_csv('chattravel-recommend/src/data/style/dummy_data.csv')
     categories = [['자연', '도시'], ['관광', '휴식'], ['사진O', '사진X'], ['럭셔리숙박', '가성비숙박']]
     
     for i in range(4):
@@ -171,6 +171,10 @@ def main():
        "accommodation": accommodation_predictions
     }
 
+    with open("chattravel-recommend/src/result/prediction_result.json", "w", encoding="utf-8") as f:
+      json.dump(result, f, ensure_ascii=False, indent=4)
+
+    sys.stdout.reconfigure(encoding='utf-8')
     print(json.dumps(result, ensure_ascii=False))
 
 if __name__ == "__main__":

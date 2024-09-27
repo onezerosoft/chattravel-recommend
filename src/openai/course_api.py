@@ -82,7 +82,7 @@ def main():
   # 문자열을 JSON으로 변환 (딕셔너리로 매핑)
   result = json.loads(result)
   
-  # 식당 & 카페 추가 검색
+  # 식당 & 카페 추가 검색 -> 추가 개발 !!
   for i in range(int(days)):
      day = f"day{i+1}"
 

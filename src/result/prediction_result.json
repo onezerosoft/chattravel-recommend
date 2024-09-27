@@ -1,0 +1,38 @@
+{
+    "place": [
+        {
+            "Item": "올레길 15-B코스(한림-고내 올레)",
+            "PredictedRating": 4.889530098144162
+        },
+        {
+            "Item": "인피니티리조트",
+            "PredictedRating": 4.784148389178953
+        },
+        {
+            "Item": "소길별하",
+            "PredictedRating": 4.7662342795502415
+        },
+        {
+            "Item": "월령포구",
+            "PredictedRating": 4.7425496016937725
+        },
+        {
+            "Item": "더블유",
+            "PredictedRating": 4.70293495658684
+        },
+        {
+            "Item": "큰노꼬메오름",
+            "PredictedRating": 4.640636735373634
+        },
+        {
+            "Item": "마마롱",
+            "PredictedRating": 4.623915217097234
+        }
+    ],
+    "accommodation": [
+        {
+            "Item": "에코랜드호텔",
+            "PredictedRating": 4.865418040153413
+        }
+    ]
+}
