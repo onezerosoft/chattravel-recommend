@@ -11,7 +11,7 @@ import json
 def main():
   
   # with 구문을 사용하여 파일을 열고 닫음
-  with open("openai/openai-key.txt", "r", encoding="utf-8") as file:
+  with open("chattravel-recommend/src/openai/openai-key.txt", "r", encoding="utf-8") as file:
       openai_key = file.read().strip()  # .strip()을 사용하여 불필요한 공백이나 줄바꿈 제거
 
   # API 키 설정
@@ -20,8 +20,8 @@ def main():
   # user input 생성
   days = sys.argv[1]
   placeList = sys.argv[2]
-  region = sys.argv[3]
-  accomodation = sys.argv[4]
+  accomodation = sys.argv[3]
+  region = sys.argv[4]
 
   message = f'''
   "request" 
@@ -76,11 +76,7 @@ def main():
   )
   result = json.loads(response['choices'][0]['message']['content'])
 
-  
 
-
-  # 문자열을 JSON으로 변환 (딕셔너리로 매핑)
-  result = json.loads(result)
   
   # 식당 & 카페 추가 검색 -> 추가 개발 !!
   for i in range(int(days)):
@@ -101,9 +97,11 @@ def main():
         result[day].insert(4, {"place": "식당2", "reason":""})
         result[day].insert(5, {"place": "카페2", "reason":""})
 
-  
-  print(json.dumps(result, ensure_ascii=False))
-     
+  with open("chattravel-recommend/src/result/course_api_result.json", "w", encoding="utf-8") as f:
+        json.dump(result, f, ensure_ascii=False, indent=4)
+
+#   sys.stdout.reconfigure(encoding='utf-8')
+#   print(json.dumps(result, ensure_ascii=False))
 
 if __name__ == "__main__":
     main()
