@@ -40,9 +40,14 @@ def main():
 
   # user input 생성
   days = sys.argv[1]
-  placeList = sys.argv[2]
-  accomodation = sys.argv[3]
-  region = sys.argv[4]
+  region = sys.argv[2]
+
+  file_path = "chattravel-recommend/src/result/prediction_result.json"
+  with open(file_path, 'r', encoding='utf-8') as file:
+    data = json.load(file)
+
+  placeList = data['place']
+  accommodation = data['accommodation'][0]
 
   message = f'''
   "request" 
@@ -60,35 +65,36 @@ def main():
   - 각 장소에 대한 주소와 카카오맵 URL도 함께 보내
   - "accomodation"은 숙소명이야, 간략한 설명과 숙소 주소, 카카오맵 URL도 보내
   - 내가 준 JSON 형식으로만 대답해
+  - 각 day 리스트에는 여행지만 있으면 되고, 3개를 초과하지 않아
 
   "days" : {days}
-  "placeList" : [{placeList}]
-  "accomodation" : {accomodation}
+  "placeList" : {placeList}
+  "accomodation" : {accommodation}
 
 
   If "days" is is 1, format the response as a JSON object with the following structure:
   {{
       "courseTitle": "courseTitle"
-      "accomodation":{{"comment":"간략한 설명","address":"address1", "place_url":"url1"}}
+      "accommodation":{{"comment":"간략한 설명", "address":"address1", "place_url":"url1"}}
       "day1": [
-          {{"place":"place1", "reason":"reason1", "address":"address1", "place_url":"url1"}},
-          {{"place":"place2", "reason":"reason2", "address":"address2", "place_url":"url2"}},
-          {{"place":"place3", "reason":"reason3", "address":"address3", "place_url":"url3"}}
+          {{"place":"place1", "ratings":"PredictedRating", "reason":"reason1", "address":"address1", "place_url":"url1"}},
+          {{"place":"place2", "ratings":"PredictedRating", "reason":"reason2", "address":"address2", "place_url":"url2"}},
+          {{"place":"place3", "ratings":"PredictedRating", "reason":"reason3", "address":"address3", "place_url":"url3"}}
       ]
   }}
 
   If "days" is is not 1, format the response as a JSON object with the following structure:
   {{
       "courseTitle": "courseTitle"
-      "accomodation":{{"address":"address1", "place_url":"url1"}}
+      "accommodation":{{"address":"address1", "place_url":"url1"}}
       "day1": [
-          {{"place":"place1", "reason":"reason1", "address": "address1", "place_url":"url1"}},
-          {{"place":"place2", "reason":"reason2", "address": "address2", "place_url":"url2"}}
+          {{"place":"place1", "ratings":"PredictedRating", "reason":"reason1", "address": "address1", "place_url":"url1"}},
+          {{"place":"place2", "ratings":"PredictedRating", "reason":"reason2", "address": "address2", "place_url":"url2"}}
       ],
       "day2": [
-          {{"place":"place1", "reason":"reason1", "address":"address1", "place_url":"url1"}},
-          {{"place":"place2", "reason":"reason2", "address":"address2", "place_url":"url2"}},
-          {{"place":"place3", "reason":"reason3", "address":"address3", "place_url":"url3"}}
+          {{"place":"place1", "ratings":"PredictedRating", "reason":"reason1", "address":"address1", "place_url":"url1"}},
+          {{"place":"place2", "ratings":"PredictedRating", "reason":"reason2", "address":"address2", "place_url":"url2"}},
+          {{"place":"place3", "ratings":"PredictedRating", "reason":"reason3", "address":"address3", "place_url":"url3"}}
       ],
       ...
   }}
@@ -126,13 +132,14 @@ def main():
 
     # 첫째날, 마지막날 -> 숙박 추가, 식당&카페 추가
     elif i == 0 or i == int(days) - 1:
-      accomodation_json = {
-        "place":accomodation,
+      accommodation_json = {
+        "place":accommodation["Item"],
+        "ratings":accommodation["PredictedRating"],
         "reason":"",
-        "address":result["accomodation"]["address"],
-        "place_url":result["accomodation"]["place_url"]
+        "address":result["accommodation"]["address"],
+        "place_url":result["accommodation"]["place_url"]
       }
-      result[day].insert(0, accomodation_json)
+      result[day].insert(0, accommodation_json)
       result[day].insert(1, search_result1[0])
       result[day].insert(2, search_result1[1])
       result[day].insert(4, search_result2[0])

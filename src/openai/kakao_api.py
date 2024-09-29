@@ -56,6 +56,7 @@ def search_fnb(region, place):
     if len(r_response) == 0:
       restaurant = {
         "place":"",
+        "ratings":"",
         "reason":"",
         "address":"",
         "place_url":""
@@ -65,6 +66,7 @@ def search_fnb(region, place):
     for r in r_response:
       restaurant = {
         "place":r["place_name"],
+        "ratings":"",
         "reason":r["category_name"],
         "address":r["road_address_name"],
         "place_url":r["place_url"]
@@ -74,6 +76,7 @@ def search_fnb(region, place):
     if len(c_response) == 0:
       cafe = {
         "place":"",
+        "ratings":"",
         "reason":"",
         "address":"",
         "place_url":""
@@ -83,6 +86,7 @@ def search_fnb(region, place):
     for c in c_response:
       cafe = {
         "place":c["place_name"],
+        "ratings":"",
         "reason":c["category_name"],
         "address":c["road_address_name"],
         "place_url":c["place_url"]
