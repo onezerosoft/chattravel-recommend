@@ -5,25 +5,30 @@ import sys
 import re
 import json
 
+base_path = 'chattravel-recommend/src/'
+#base_path = 'src/' # 이거는 chattravel-recommend에서 테스트 할떄
+
+
 def load_model(region):
-    base_path = 'chattravel-recommend/src/model'
+
+    print(os.getcwd())
     
     if region == 'E':  # 수도권
-        place_model_path = os.path.join(base_path, 'place', 'svd_model_capital.pkl')
-        accommodation_model_path = os.path.join(base_path, 'accomodation', 'latent_model_capital.pkl')
+        place_model_path = os.path.join(base_path, 'model', 'place', 'svd_model_capital.pkl')
+        accommodation_model_path = os.path.join(base_path, 'model', 'accomodation', 'latent_model_capital.pkl')
     
 
     elif region == 'F':  # 동부권
-        place_model_path = os.path.join(base_path, 'place', 'svd_model_east.pkl')
-        accommodation_model_path = os.path.join(base_path, 'accomodation', 'latent_model_east.pkl')
+        place_model_path = os.path.join(base_path, 'model', 'place', 'svd_model_east.pkl')
+        accommodation_model_path = os.path.join(base_path, 'model', 'accomodation', 'latent_model_east.pkl')
     
     elif region == 'G':  # 서부권
-        place_model_path = os.path.join(base_path, 'place', 'svd_model_west.pkl')
-        accommodation_model_path = os.path.join(base_path, 'accomodation', 'latent_model_west.pkl')
+        place_model_path = os.path.join(base_path, 'model', 'place', 'svd_model_west.pkl')
+        accommodation_model_path = os.path.join(base_path, 'model', 'accomodation', 'latent_model_west.pkl')
     
     elif region == 'H':  # 제주
-        place_model_path = os.path.join(base_path, 'place', 'svd_model_jeju.pkl')
-        accommodation_model_path = os.path.join(base_path, 'accomodation', 'latent_model_jeju.pkl')
+        place_model_path = os.path.join(base_path, 'model', 'place', 'svd_model_jeju.pkl')
+        accommodation_model_path = os.path.join(base_path, 'model', 'accomodation', 'latent_model_jeju.pkl')
     
     else:
         raise ValueError("Invalid region code. Please use 'E', 'F', 'G', or 'H'.")
@@ -36,8 +41,8 @@ def load_model(region):
 
 def load_data(si):
     
-    df1 = pd.read_csv('chattravel-recommend/src/data/preprocessed/place/df_total.csv')
-    df2 = pd.read_csv('chattravel-recommend/src/data/preprocessed/accomodation/df_total.csv')
+    df1 = pd.read_csv(base_path+'data/preprocessed/place/df_total.csv')
+    df2 = pd.read_csv(base_path+'/data/preprocessed/accomodation/df_total.csv')
         
     df1 = df1[df1['SI'].isin(si)]
     df2 = df2[df2['SI'].isin(si)]
@@ -67,9 +72,10 @@ def predict_place(model, df, user_id, num, si):
     # 추천 결과 
     result = []
     for prediction in top_n_predictions:
+        percentage = (prediction.est / 5) * 100
         result.append({
            "Item": prediction.iid,
-           "PredictedRating": prediction.est
+           "PredictedRating": round(percentage, 2)
         })
     
     return result
@@ -97,9 +103,10 @@ def predict_accommodation(model, df, user_id, num, si):
     # 추천 결과 
     result = []
     for prediction in top_n_predictions:
+        percentage = (prediction.est / 5) * 100
         result.append({
            "Item": prediction.iid,
-           "PredictedRating": prediction.est
+           "PredictedRating": round(percentage, 2)
         })
     
     return result
@@ -139,7 +146,7 @@ def main():
     df1 , df2 = load_data(si)
     
     # 여행 스타일 별 더미데이터 삽입
-    dummy_df = pd.read_csv('chattravel-recommend/src/data/style/dummy_data.csv')
+    dummy_df = pd.read_csv(base_path+'/data/style/dummy_data.csv')
     categories = [['자연', '도시'], ['관광', '휴식'], ['사진O', '사진X'], ['럭셔리숙박', '가성비숙박']]
     
     for i in range(4):
@@ -171,9 +178,9 @@ def main():
        "accommodation": accommodation_predictions
     }
 
-    with open("chattravel-recommend/src/result/prediction_result.json", "w", encoding="utf-8") as f:
-      json.dump(result, f, ensure_ascii=False, indent=4)
-
+    # with open("chattravel-recommend/src/result/prediction_result.json", "w", encoding="utf-8") as f:
+    #   json.dump(result, f, ensure_ascii=False, indent=4)
+    print(result)
 #     sys.stdout.reconfigure(encoding='utf-8')
 #     print(json.dumps(result, ensure_ascii=False))
 
