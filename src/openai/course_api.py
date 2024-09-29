@@ -35,7 +35,8 @@ def main():
   - All places in "placeList" must be used.
   - Design the distance between places visited on the same day of the course to be close
   - Create a "courseTitle" that tactfully represents the entire course and identifies the {region}.
-
+  - 응답은 다 반말로 친절하게 작성해줘
+  
   "days" : {days}
   "placeList" : [{placeList}]
 
@@ -66,16 +67,15 @@ def main():
   }}
   '''
 
-  # GPT-3.5 모델 호출
+  # GPT-4 모델 
   response = openai.ChatCompletion.create(
-      model="gpt-3.5-turbo",
+      model="gpt-4-1106-preview",
       messages=[
           {"role": "system", "content": "You are a helpful assistant."},
           {"role": "user", "content": message}
       ]
   )
   result = json.loads(response['choices'][0]['message']['content'])
-
 
   
   # 식당 & 카페 추가 검색 -> 추가 개발 !!
