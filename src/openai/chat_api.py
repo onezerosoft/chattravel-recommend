@@ -2,25 +2,34 @@
 # 1. 유저의 요구사항 파악
 # 2. 챗봇 페르소나 기반 응답 생성
 
-import argparse
 import openai
 import sys
 import json
 import os
+from dotenv import load_dotenv
+import re
 
-def clear_json_content(json_obj):
-    if isinstance(json_obj, dict):
-        return {key: clear_json_content(value) for key, value in json_obj.items()}
-    elif isinstance(json_obj, list):
-        return [clear_json_content(item) for item in json_obj]
+def extract_json_from_text(text):
+    json_pattern = re.compile(r'\{(?:[^{}]|(?R))*\}')
+    match = json_pattern.search(text)
+    
+    if match:
+        json_str = match.group()
+        try:
+            json_data = json.loads(json_str)
+            return json_data
+        except json.JSONDecodeError as e:
+            print(f"Error parsing JSON: {e}")
+            return None
     else:
-        # 내용 제거 (None으로 설정하거나 빈 문자열, 빈 리스트 등으로 설정 가능)
-        return "content"  
+        print("No JSON found in the text.")
+        return None
 
 def main():
-  # with 구문을 사용하여 파일을 열고 닫음
-  with open("chattravel-recommend/src/openai/openai-key.txt", "r", encoding="utf-8") as file:
-      openai_key = file.read().strip()  # .strip()을 사용하여 불필요한 공백이나 줄바꿈 제거
+  # .env 파일에서 환경 변수 읽기
+  load_dotenv()
+
+  openai_key = os.getenv('OPENAI_API_KEY')
 
   # API 키 설정
   openai.api_key = openai_key
@@ -97,13 +106,9 @@ def main():
           {"role": "user", "content": message}
       ]
   )
-  response = response['choices'][0]['message']['content']
-
-  # 마크다운 표기 제거 (앞의 ```json와 끝의 ``` 제거)
-  clean_json_string = response.strip('```json\n').strip('```')
+  response = extract_json_from_text(response['choices'][0]['message']['content'])
   
-  result = json.loads(clean_json_string)
-
+  result = json.loads(response)
 
   with open("chattravel-recommend/src/result/chat_api_result.json", "w", encoding="utf-8") as f:
       json.dump(result, f, ensure_ascii=False, indent=4)
