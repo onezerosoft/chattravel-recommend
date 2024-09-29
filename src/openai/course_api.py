@@ -11,6 +11,9 @@ import os
 import kakao_api
 import re
 
+base_path = "chattravel-recommend/src/"
+#base_path = "src/"
+
 def extract_json_from_text(text):
     try:
         # 첫 번째 중괄호와 마지막 중괄호를 찾아서 추출
@@ -30,19 +33,29 @@ def extract_json_from_text(text):
     
 
 def main():
-  # .env 파일에서 환경 변수 읽기
-  load_dotenv()
+  # # .env 파일에서 환경 변수 읽기
+  # load_dotenv()
 
-  openai_key = os.getenv('OPENAI_API_KEY')
+  # openai_key = os.getenv('OPENAI_API_KEY')
+
+  # # API 키 설정
+  # openai.api_key = openai_key
+
+  
+# with 구문을 사용하여 파일을 열고 닫음
+  with open(base_path+"openai/openai-key.txt", "r", encoding="utf-8") as file:
+      openai_key = file.read().strip()  # .strip()을 사용하여 불필요한 공백이나 줄바꿈 제거
 
   # API 키 설정
   openai.api_key = openai_key
 
+
   # user input 생성
   days = sys.argv[1]
   region = sys.argv[2]
+  userId = sys.argv[3]
 
-  file_path = "chattravel-recommend/src/result/prediction_result.json"
+  file_path = base_path+f"result/prediction_result_{userId}.json"
   with open(file_path, 'r', encoding='utf-8') as file:
     data = json.load(file)
 
@@ -65,7 +78,6 @@ def main():
   - 각 장소에 대한 주소와 카카오맵 URL도 함께 보내
   - "accomodation"은 숙소명이야, 간략한 설명과 숙소 주소, 카카오맵 URL도 보내
   - 내가 준 JSON 형식으로만 대답해
-  - 각 day 리스트에는 여행지만 있으면 되고, 3개를 초과하지 않아
 
   "days" : {days}
   "placeList" : {placeList}
@@ -116,11 +128,13 @@ def main():
     day = f"day{i+1}"
 
     keword1 = result[day][0]["place"]
+    region1 = result[day][0]["address"].split()[1]
     keword2 = result[day][1]["place"]
+    region2 = result[day][1]["address"].split()[1]
 
     # kakao 검색
-    search_result1 = kakao_api.search_fnb(region, keword1)
-    search_result2 = kakao_api.search_fnb(region, keword2)
+    search_result1 = kakao_api.search_fnb(region1, keword1)
+    search_result2 = kakao_api.search_fnb(region2, keword2)
 
 
     # 당일치기, 중간날 -> 식당&카페 추가
@@ -146,7 +160,7 @@ def main():
       result[day].insert(5, search_result2[1])
 
 
-  with open("chattravel-recommend/src/result/course_api_result.json", "w", encoding="utf-8") as f:
+  with open(base_path+f"result/course_api_result_{userId}.json", "w", encoding="utf-8") as f:
         json.dump(result, f, ensure_ascii=False, indent=4)
 
 #   sys.stdout.reconfigure(encoding='utf-8')

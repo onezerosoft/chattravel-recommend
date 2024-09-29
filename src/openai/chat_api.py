@@ -9,39 +9,51 @@ import os
 from dotenv import load_dotenv
 import re
 
+base_path = "chattravel-recommend/src/"
+#base_path = "src/"
 def extract_json_from_text(text):
-    json_pattern = re.compile(r'\{(?:[^{}]|(?R))*\}')
-    match = json_pattern.search(text)
-    
-    if match:
-        json_str = match.group()
-        try:
-            json_data = json.loads(json_str)
-            return json_data
-        except json.JSONDecodeError as e:
-            print(f"Error parsing JSON: {e}")
+    try:
+        # 첫 번째 중괄호와 마지막 중괄호를 찾아서 추출
+        start = text.find('{')
+        end = text.rfind('}') + 1
+        
+        if start == -1 or end == -1:
+            print("No JSON found in the text.")
             return None
-    else:
-        print("No JSON found in the text.")
+        
+        json_str = text[start:end]
+        json_data = json.loads(json_str)
+        return json_data
+    except json.JSONDecodeError as e:
+        print(f"Error parsing JSON: {e}")
         return None
+    
 
 def main():
-  # .env 파일에서 환경 변수 읽기
-  load_dotenv()
+  # # .env 파일에서 환경 변수 읽기
+  # load_dotenv()
 
-  openai_key = os.getenv('OPENAI_API_KEY')
+  # openai_key = os.getenv('OPENAI_API_KEY')
+
+  # # API 키 설정
+  # openai.api_key = openai_key
+
+  # with 구문을 사용하여 파일을 열고 닫음
+  with open(base_path+"openai/openai-key.txt", "r", encoding="utf-8") as file:
+      openai_key = file.read().strip()  # .strip()을 사용하여 불필요한 공백이나 줄바꿈 제거
 
   # API 키 설정
   openai.api_key = openai_key
 
+
   # 인자 파싱
   userMessage = sys.argv[1]
+  chatId = sys.argv[2]
 
-  with open("chattravel-recommend/src/result/course_args.txt", "r", encoding="utf-8") as f:
+  with open(f"chattravel-recommend/src/result/course_args_{chatId}.txt", "r", encoding="utf-8") as f:
     course = f.read()
 
-  clean_json = clear_json_content(json.loads(course))
-  course_format = json.dumps(clean_json, indent=2)  
+  course_format = extract_json_from_text(course)
 
   message = f'''
   "role":
@@ -106,11 +118,9 @@ def main():
           {"role": "user", "content": message}
       ]
   )
-  response = extract_json_from_text(response['choices'][0]['message']['content'])
-  
-  result = json.loads(response)
+  result = extract_json_from_text(response['choices'][0]['message']['content'])
 
-  with open("chattravel-recommend/src/result/chat_api_result.json", "w", encoding="utf-8") as f:
+  with open(base_path+f"result/chat_api_result_{chatId}.json", "w", encoding="utf-8") as f:
       json.dump(result, f, ensure_ascii=False, indent=4)
 
 #     sys.stdout.reconfigure(encoding='utf-8')

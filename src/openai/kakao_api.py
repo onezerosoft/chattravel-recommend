@@ -15,6 +15,7 @@ def kakao_local_search(keyword, num, code):
 
   # URL 인코딩된 검색어
   encoded_keyword = urllib.parse.quote(keyword)
+  
 
   # API 요청 URL
   url = f"https://dapi.kakao.com/v2/local/search/keyword.json?query={encoded_keyword}&size={num}&category_group_code={code}"
@@ -103,3 +104,4 @@ def search_fnb(region, place):
   print(result)
 
   return result
+

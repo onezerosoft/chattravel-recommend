@@ -1,26 +1,38 @@
 {
     "place": [
         {
-            "Item": "서울역사박물관",
-            "PredictedRating": 4.767341935772755
+            "Item": "올레길 15-B코스(한림-고내 올레)",
+            "PredictedRating": 97.79
         },
         {
-            "Item": "오브젝트 성수점",
-            "PredictedRating": 4.627271596402379
+            "Item": "인피니티리조트",
+            "PredictedRating": 95.68
         },
         {
-            "Item": "한전아트센터",
-            "PredictedRating": 4.610914592750451
+            "Item": "소길별하",
+            "PredictedRating": 95.32
         },
         {
-            "Item": "창덕궁",
-            "PredictedRating": 4.608169656088587
+            "Item": "월령포구",
+            "PredictedRating": 94.85
+        },
+        {
+            "Item": "더블유",
+            "PredictedRating": 94.06
+        },
+        {
+            "Item": "큰노꼬메오름",
+            "PredictedRating": 92.81
+        },
+        {
+            "Item": "마마롱",
+            "PredictedRating": 92.48
         }
     ],
     "accommodation": [
         {
-            "Item": "콘래드",
-            "PredictedRating": 4.732076413353718
+            "Item": "에코랜드호텔",
+            "PredictedRating": 97.31
         }
     ]
 }

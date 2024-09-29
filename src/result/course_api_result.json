@@ -1,63 +1,160 @@
 {
-    "courseTitle": "서울 수도권 소중한 2일 여행",
+    "courseTitle": "수도권 역사와 문화의 조화 속 삼일 여정",
+    "accommodation": {
+        "address": "서울특별시 영등포구 여의도동 23-1",
+        "place_url": "https://place.map.kakao.com/26338954"
+    },
     "day1": [
         {
             "place": "콘래드",
-            "reason": ""
+            "ratings": 94.64,
+            "reason": "",
+            "address": "서울특별시 영등포구 여의도동 23-1",
+            "place_url": "https://place.map.kakao.com/26338954"
         },
         {
-            "place": "식당1",
-            "reason": ""
+            "place": "정원레스토랑 어반가든",
+            "ratings": "",
+            "reason": "음식점 > 양식 > 스테이크,립",
+            "address": "서울 중구 정동길 12-15",
+            "place_url": "http://place.map.kakao.com/15982071"
         },
         {
-            "place": "카페1",
-            "reason": ""
+            "place": "커피루소 정동점",
+            "ratings": "",
+            "reason": "음식점 > 카페",
+            "address": "서울 중구 정동길 17",
+            "place_url": "http://place.map.kakao.com/253560122"
         },
         {
             "place": "서울역사박물관",
-            "reason": "역사적인 가치가 풍부하며 교통이 편리하여 첫날 방문하기 좋은 장소입니다."
+            "ratings": "95.35",
+            "reason": "서울의 역사를 한눈에 볼 수 있는 곳으로 첫째 날 여행의 서막을 열기에 제격이야.",
+            "address": "서울특별시 종로구 새문안로 55",
+            "place_url": "https://place.map.kakao.com/17105773"
         },
         {
-            "place": "식당2",
-            "reason": ""
+            "place": "계림 종로본점",
+            "ratings": "",
+            "reason": "음식점 > 한식 > 육류,고기 > 닭요리",
+            "address": "서울 종로구 돈화문로4길 39",
+            "place_url": "http://place.map.kakao.com/8758064"
         },
         {
-            "place": "카페2",
-            "reason": ""
+            "place": "청수당 베이커리",
+            "ratings": "",
+            "reason": "음식점 > 카페 > 테마카페 > 디저트카페",
+            "address": "서울 종로구 돈화문로11나길 31-9",
+            "place_url": "http://place.map.kakao.com/78911659"
         },
         {
-            "place": "창덕궁",
-            "reason": "아름다운 정원과 전통 건물을 볼 수 있는 곳으로 마지막 날을 장식하는 데 최적의 장소입니다."
+            "place": "종묘",
+            "ratings": "91.83",
+            "reason": "역사박물관 관람 후 조선 왕조의 사당인 종묘를 방문해 역사의 숨결을 더 느껴봐.",
+            "address": "서울특별시 종로구 종로 157",
+            "place_url": "https://place.map.kakao.com/7949857"
         }
     ],
     "day2": [
         {
-            "place": "콘래드",
-            "reason": ""
+            "place": "창덕궁",
+            "ratings": "92.16",
+            "reason": "아침일찍 궁궐의 아름다움을 감상하는 건 어때? 창덕궁은 한국의 아름다운 전통을 느낄 수 있는 곳이야.",
+            "address": "서울특별시 종로구 율곡로 99",
+            "place_url": "https://place.map.kakao.com/8114713"
         },
         {
-            "place": "식당1",
-            "reason": ""
+            "place": "깡통만두",
+            "ratings": "",
+            "reason": "음식점 > 분식",
+            "address": "서울 종로구 북촌로2길 5-6",
+            "place_url": "http://place.map.kakao.com/19158798"
         },
         {
-            "place": "카페1",
-            "reason": ""
+            "place": "어니언 안국",
+            "ratings": "",
+            "reason": "음식점 > 카페",
+            "address": "서울 종로구 계동길 5",
+            "place_url": "http://place.map.kakao.com/853028118"
         },
         {
             "place": "한전아트센터",
-            "reason": "문화와 미술을 만끽할 수 있는 공간으로 중간 날에 방문하기 좋은 지역입니다."
+            "ratings": "92.22",
+            "reason": "창덕궁 관람 후 가까운 한전아트센터에서 문화예술의 향기를 느껴봐.",
+            "address": "서울특별시 강남구 봉은사로 114",
+            "place_url": "https://place.map.kakao.com/26895374"
         },
         {
-            "place": "식당2",
-            "reason": ""
+            "place": "임병주 산동칼국수",
+            "ratings": "",
+            "reason": "음식점 > 한식 > 국수 > 칼국수",
+            "address": "서울 서초구 강남대로37길 65",
+            "place_url": "http://place.map.kakao.com/25038356"
         },
         {
-            "place": "카페2",
-            "reason": ""
+            "place": "프릳츠 양재점",
+            "ratings": "",
+            "reason": "음식점 > 카페 > 커피전문점",
+            "address": "서울 서초구 강남대로37길 24-11",
+            "place_url": "http://place.map.kakao.com/554364299"
+        },
+        {
+            "place": "한지문화산업센터",
+            "ratings": "91.58",
+            "reason": "전통 한지의 다양한 면모와 문화를 체험할 수 있는 곳으로 하루를 마무리하기에 좋아.",
+            "address": "서울특별시 서대문구 연희로2길 32",
+            "place_url": "https://place.map.kakao.com/27478513"
+        }
+    ],
+    "day3": [
+        {
+            "place": "콘래드",
+            "ratings": 94.64,
+            "reason": "",
+            "address": "서울특별시 영등포구 여의도동 23-1",
+            "place_url": "https://place.map.kakao.com/26338954"
+        },
+        {
+            "place": "제스티살룬 성수",
+            "ratings": "",
+            "reason": "음식점 > 양식 > 햄버거",
+            "address": "서울 성동구 서울숲4길 13",
+            "place_url": "http://place.map.kakao.com/1965582130"
+        },
+        {
+            "place": "센터커피 서울숲점",
+            "ratings": "",
+            "reason": "음식점 > 카페 > 커피전문점",
+            "address": "서울 성동구 서울숲2길 28-11",
+            "place_url": "http://place.map.kakao.com/286483883"
         },
         {
             "place": "오브젝트 성수점",
-            "reason": "다양한 디자인 제품을 만나볼 수 있고, 쇼핑하기에 좋은 공간으로 두 번째 날을 즐길 수 있는 장소입니다."
+            "ratings": "92.55",
+            "reason": "개성 있는 성수동의 분위기를 느껴보며 신선한 아침을 시작해봐.",
+            "address": "서울특별시 성동구 연무장5길 7",
+            "place_url": "https://place.map.kakao.com/1302732945"
+        },
+        {
+            "place": "텍사스데브라질 센트럴시티점",
+            "ratings": "",
+            "reason": "음식점 > 양식",
+            "address": "서울 서초구 사평대로 205",
+            "place_url": "http://place.map.kakao.com/26930532"
+        },
+        {
+            "place": "스타벅스 파미에파크R점",
+            "ratings": "",
+            "reason": "음식점 > 카페 > 커피전문점 > 스타벅스",
+            "address": "서울 서초구 사평대로 205",
+            "place_url": "http://place.map.kakao.com/25502514"
+        },
+        {
+            "place": "고투몰",
+            "ratings": "91.84",
+            "reason": "성수동에서 즐거운 쇼핑을 한 뒤에 서울의 핫플레이스, 강변고투몰에서 쇼핑의 재미를 이어가자.",
+            "address": "서울특별시 광진구 구의동 546-4",
+            "place_url": "https://place.map.kakao.com/8012131"
         }
     ]
 }

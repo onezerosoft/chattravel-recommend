@@ -178,9 +178,9 @@ def main():
        "accommodation": accommodation_predictions
     }
 
-    # with open("chattravel-recommend/src/result/prediction_result.json", "w", encoding="utf-8") as f:
-    #   json.dump(result, f, ensure_ascii=False, indent=4)
-    print(result)
+    with open(base_path+f"result/prediction_result_{user_id}.json", "w", encoding="utf-8") as f:
+      json.dump(result, f, ensure_ascii=False, indent=4)
+
 #     sys.stdout.reconfigure(encoding='utf-8')
 #     print(json.dumps(result, ensure_ascii=False))
 
