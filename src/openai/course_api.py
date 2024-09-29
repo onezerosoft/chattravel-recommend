@@ -138,8 +138,6 @@ def main():
       result[day].insert(4, search_result2[0])
       result[day].insert(5, search_result2[1])
 
-  print("...")
-  print(result)
 
   with open("chattravel-recommend/src/result/course_api_result.json", "w", encoding="utf-8") as f:
         json.dump(result, f, ensure_ascii=False, indent=4)
