@@ -7,9 +7,7 @@ import openai
 import sys
 import json
 from dotenv import load_dotenv
-import os
 import kakao_api
-import re
 
 base_path = "chattravel-recommend/src/"
 #base_path = "src/"
