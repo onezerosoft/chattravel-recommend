@@ -5,13 +5,13 @@ import sys
 import re
 import json
 
-base_path = '/home/ubuntu/chattravel-recommend/src/'
+base_path = '/home/ubuntu/chattravel-server/chattravel-recommend/src/'
 #base_path = 'src/' # 이거는 chattravel-recommend에서 테스트 할떄
 
 
 def load_model(region):
 
-    print(os.getcwd())
+    #print(os.getcwd())
     
     if region == 'E':  # 수도권
         place_model_path = os.path.join(base_path, 'model', 'place', 'svd_model_capital.pkl')
@@ -110,6 +110,11 @@ def predict_accommodation(model, df, user_id, num, si):
         })
     
     return result
+
+def insert_dummy_data(df):
+   
+   
+   return
 
 
 def main():
