@@ -5,7 +5,7 @@ import sys
 import re
 import json
 
-base_path = 'chattravel-recommend/src/'
+base_path = '/home/ubuntu/chattravel-recommend/src/'
 #base_path = 'src/' # 이거는 chattravel-recommend에서 테스트 할떄
 
 

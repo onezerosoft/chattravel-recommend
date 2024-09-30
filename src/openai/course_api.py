@@ -9,7 +9,7 @@ import json
 from dotenv import load_dotenv
 import kakao_api
 
-base_path = "chattravel-recommend/src/"
+base_path = "/home/ubuntu/chattravel-recommend/src/"
 #base_path = "src/"
 
 def extract_json_from_text(text):
