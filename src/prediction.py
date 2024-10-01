@@ -4,6 +4,7 @@ import os
 import sys
 import re
 import json
+import random
 
 base_path = '/home/ubuntu/chattravel-server/chattravel-recommend/src/'
 #base_path = 'src/' # 이거는 chattravel-recommend에서 테스트 할떄
@@ -67,7 +68,8 @@ def predict_place(model, df, user_id, num, si):
     #predictions = predictions[predictions['SI'].isin(si)]
 
     # 예측된 점수로 정렬하여 상위 N개의 아이템 추천
-    top_n_predictions = sorted(predictions, key=lambda x: x.est, reverse=True)[:num]
+    top_n_predictions = sorted(predictions, key=lambda x: x.est, reverse=True)[:20]
+    top_n_predictions = random.sample(top_n_predictions, num)
 
     # 추천 결과 
     result = []
@@ -97,7 +99,8 @@ def predict_accommodation(model, df, user_id, num, si):
     #predictions = predictions[predictions['SI'].isin(si)]
 
     # 예측된 점수로 정렬하여 상위 N개의 아이템 추천
-    top_n_predictions = sorted(predictions, key=lambda x: x.est, reverse=True)[:num]
+    top_n_predictions = sorted(predictions, key=lambda x: x.est, reverse=True)[:10]
+    top_n_predictions = random.sample(top_n_predictions, num)
 
   
     # 추천 결과 
@@ -111,10 +114,41 @@ def predict_accommodation(model, df, user_id, num, si):
     
     return result
 
-def insert_dummy_data(df):
-   
-   
-   return
+def insert_dummy_data(df1, df2, code, user_id, styleList):
+    # 여행 스타일 별 더미데이터 삽입
+    dummy_df = pd.read_csv(base_path+'/data/style/updated_dummy_data.csv')
+    categories = [['자연', '도시'], ['관광', '휴식'], ['사진O', '사진X'], ['럭셔리숙박', '가성비숙박']]
+    print(styleList)
+    for i in range(4):
+        style = styleList[i]
+        a, b = categories[i]
+        print(style)
+        
+        random_rows_a = dummy_df[(dummy_df['category'] == a) & (dummy_df['CODE'] == code)]
+        random_rows_b = dummy_df[(dummy_df['category'] == b) & (dummy_df['CODE'] == code)]
+        
+        # .loc[]로 명시적으로 값 설정
+        random_rows_a.loc[:, 'rating'] = 6 - style
+        random_rows_b.loc[:, 'rating'] = style
+        random_rows_a.loc[:, 'userID'] = user_id
+        random_rows_b.loc[:, 'userID'] = user_id
+        
+        random_rows_a = random_rows_a.drop(columns=['category'])
+        random_rows_b = random_rows_b.drop(columns=['category'])
+        
+        random_rows_a = random_rows_a.drop(columns=['CODE'])
+        random_rows_b = random_rows_b.drop(columns=['CODE'])
+
+        #print(random_rows_a)
+        #print(random_rows_b)
+        
+        if i < 3:
+            df1 = pd.concat([df1, random_rows_a, random_rows_b], ignore_index=True)
+        else: 
+            df2 = pd.concat([df2, random_rows_a, random_rows_b], ignore_index=True)
+        
+    
+    return df1, df2
 
 
 def main():
@@ -150,27 +184,8 @@ def main():
     place_model, accommodation_model = load_model(region)
     df1 , df2 = load_data(si)
     
-    # 여행 스타일 별 더미데이터 삽입
-    dummy_df = pd.read_csv(base_path+'/data/style/dummy_data.csv')
-    categories = [['자연', '도시'], ['관광', '휴식'], ['사진O', '사진X'], ['럭셔리숙박', '가성비숙박']]
-    
-    for i in range(4):
-        style = styleList[i]
-        a, b = categories[i]
-        
-        random_rows_a = dummy_df[dummy_df['category'] == a].sample(n=20)
-        random_rows_b = dummy_df[dummy_df['category'] == b].sample(n=20)
-        random_rows_a['rating'] = 6-style
-        random_rows_b['rating'] = style
-        random_rows_a['userID'] = user_id
-        random_rows_b['userID'] = user_id
-        random_rows_a = random_rows_a.drop(columns=['category'])
-        random_rows_b = random_rows_b.drop(columns=['category'])
-        
-        if i < 3:
-            df1 = pd.concat([df1, random_rows_a, random_rows_b], ignore_index=True)
-        else: 
-            df2 = pd.concat([df2, random_rows_a, random_rows_b], ignore_index=True)
+    # 더미데이터 생성
+    df1, df2 = insert_dummy_data(df1, df2, region, user_id, styleList)
     
     # 여행지 추천 모델
     place_predictions = predict_place(place_model, df1, user_id, place_num, si)
@@ -186,6 +201,7 @@ def main():
     with open(base_path+f"result/prediction_result_{user_id}.json", "w", encoding="utf-8") as f:
       json.dump(result, f, ensure_ascii=False, indent=4)
 
+    #print(result)
 #     sys.stdout.reconfigure(encoding='utf-8')
 #     print(json.dumps(result, ensure_ascii=False))
 
