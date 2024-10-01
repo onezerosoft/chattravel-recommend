@@ -50,7 +50,7 @@ def main():
   userMessage = sys.argv[1]
   chatId = sys.argv[2]
 
-  with open(f"chattravel-recommend/src/result/course_args_{chatId}.txt", "r", encoding="utf-8") as f:
+  with open(base_path+f"result/course_args_{chatId}.txt", "r", encoding="utf-8") as f:
     course = f.read()
 
   course_format = extract_json_from_text(course)
