@@ -3,7 +3,7 @@
 # 2. 여행지별 배치 이유 작성
 # 3. 식당&카페 검색 API
 
-import openai
+from openai import OpenAI
 import sys
 import json
 from dotenv import load_dotenv
@@ -41,11 +41,11 @@ def main():
 
   
 # with 구문을 사용하여 파일을 열고 닫음
-  with open(base_path+"openai/openai-key.txt", "r", encoding="utf-8") as file:
-      openai_key = file.read().strip()  # .strip()을 사용하여 불필요한 공백이나 줄바꿈 제거
+  # with open(base_path+"openai/openai-key.txt", "r", encoding="utf-8") as file:
+  #     openai_key = file.read().strip()  # .strip()을 사용하여 불필요한 공백이나 줄바꿈 제거
 
-  # API 키 설정
-  openai.api_key = openai_key
+  # # API 키 설정
+  # openai.api_key = openai_key
 
 
   # user input 생성
@@ -110,16 +110,18 @@ def main():
   }}
   '''
 
-  # GPT-4 모델 
-  response = openai.ChatCompletion.create(
-      model="gpt-4-1106-preview",
-      messages=[
-          {"role": "system", "content": "You are a helpful assistant."},
-          {"role": "user", "content": message}
-      ]
+  # GPT-4 모델 사용
+  client = OpenAI()
+
+  completion = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[
+      {"role": "system", "content": "You are a helpful assistant."},
+      {"role": "user", "content": message}  
+    ]
   )
-  result = extract_json_from_text(response['choices'][0]['message']['content'])
-  
+  result = extract_json_from_text(completion.choices[0].message.content)
+
 
   # 식당 & 카페 추가 검색 
   for i in range(int(days)):

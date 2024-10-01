@@ -2,7 +2,7 @@
 # 1. 유저의 요구사항 파악
 # 2. 챗봇 페르소나 기반 응답 생성
 
-import openai
+from openai import OpenAI
 import sys
 import json
 import os
@@ -39,11 +39,11 @@ def main():
   # openai.api_key = openai_key
 
   # with 구문을 사용하여 파일을 열고 닫음
-  with open(base_path+"openai/openai-key.txt", "r", encoding="utf-8") as file:
-      openai_key = file.read().strip()  # .strip()을 사용하여 불필요한 공백이나 줄바꿈 제거
+  # with open(base_path+"openai/openai-key.txt", "r", encoding="utf-8") as file:
+  #     openai_key = file.read().strip()  # .strip()을 사용하여 불필요한 공백이나 줄바꿈 제거
 
   # API 키 설정
-  openai.api_key = openai_key
+  #openai.api_key = openai_key
 
 
   # 인자 파싱
@@ -109,16 +109,17 @@ def main():
   }}
   '''
 
-
   # GPT-4 모델 사용
-  response = openai.ChatCompletion.create(
-      model="gpt-4-1106-preview",
-      messages=[
-          {"role": "system", "content": "You are a helpful assistant."},
-          {"role": "user", "content": message}
-      ]
+  client = OpenAI()
+
+  completion = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[
+      {"role": "system", "content": "You are a helpful assistant."},
+      {"role": "user", "content": message}  
+    ]
   )
-  result = extract_json_from_text(response['choices'][0]['message']['content'])
+  result = extract_json_from_text(completion.choices[0].message.content)
 
   with open(base_path+f"result/chat_api_result_{chatId}.json", "w", encoding="utf-8") as f:
       json.dump(result, f, ensure_ascii=False, indent=4)
