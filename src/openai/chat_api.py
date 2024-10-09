@@ -82,7 +82,6 @@ def main():
   - If you can't find the service requested by the user (function: 6), use "role" to generate an appropriate response.
   - Write it in Korean.
   - Write in a bright and kind way.
-  - Respond in a friendly informal manner
   - 응답은 다 반말로 친절하게 작성해줘
   
   "userMessage" : {userMessage}
