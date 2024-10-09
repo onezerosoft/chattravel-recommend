@@ -53,19 +53,18 @@ def load_data(si):
 
 def predict_place(model, df, user_id, num, si):
     
-    items_to_predict = df['itemID'].unique()
+    # 사용자가 방문한 아이템 중 si가 벗어나는 것 제거
+    df = df['itemID'].unique()
+    items_to_predict = df[df['SI'] == si]
 
     # 사용자가 방문하지 않은 아이템에 대한 예측 생성
-    all_items = df['itemID'].unique()
-    user_items = df[df['userID'] == user_id]['itemID'].unique()
-    items_to_predict = [item for item in all_items if item not in user_items]
+    # all_items = df['itemID'].unique()
+    # user_items = df[df['userID'] == user_id]['itemID'].unique()
+    # items_to_predict = [item for item in all_items if item not in user_items]
 
     # 각 아이템에 대해 예측 수행
     predictions = [model.predict(user_id, item) for item in items_to_predict]
 
-    # SI 필터링
-    #print(predictions)
-    #predictions = predictions[predictions['SI'].isin(si)]
 
     # 예측된 점수로 정렬하여 상위 N개의 아이템 추천
     top_n_predictions = sorted(predictions, key=lambda x: x.est, reverse=True)[:30]
@@ -85,12 +84,14 @@ def predict_place(model, df, user_id, num, si):
 
 
 def predict_accommodation(model, df, user_id, num, si):
-    items_to_predict = df['itemID'].unique()
+    # 사용자가 방문한 아이템 중 si가 벗어나는 것 제거
+    df = df['itemID'].unique()
+    items_to_predict = df[df['SI'] == si]
 
     # 사용자가 방문하지 않은 아이템에 대한 예측 생성
-    all_items = df['itemID'].unique()
-    user_items = df[df['userID'] == user_id]['itemID'].unique()
-    items_to_predict = [item for item in all_items if item not in user_items]
+    # all_items = df['itemID'].unique()
+    # user_items = df[df['userID'] == user_id]['itemID'].unique()
+    # items_to_predict = [item for item in all_items if item not in user_items]
 
     # 각 아이템에 대해 예측 수행
     predictions = [model.predict(user_id, item) for item in items_to_predict]
@@ -110,6 +111,7 @@ def predict_accommodation(model, df, user_id, num, si):
         })
     
     return result
+
 
 def insert_dummy_data(df1, df2, code, p_user_id,a_user_id, styleList):
     # 여행 스타일 별 더미데이터 삽입
@@ -189,7 +191,7 @@ def main():
       p_user_id = "h"+user_id
       a_user_id = "h_h"+user_id
 
-    # 지역별 추천 모델과 데이터 불러오기
+    # 지역별 추천모델과 데이터 불러오기
     place_model, accommodation_model = load_model(region)
     df1 , df2 = load_data(si)
     
