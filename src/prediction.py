@@ -56,9 +56,9 @@ def predict_place(model, df, user_id, num, si):
     items_to_predict = df['itemID'].unique()
 
     # 사용자가 방문하지 않은 아이템에 대한 예측 생성
-    # all_items = df['itemID'].unique()
-    # user_items = df[df['userID'] == user_id]['itemID'].unique()
-    # items_to_predict = [item for item in all_items if item not in user_items]
+    all_items = df['itemID'].unique()
+    user_items = df[df['userID'] == user_id]['itemID'].unique()
+    items_to_predict = [item for item in all_items if item not in user_items]
 
     # 각 아이템에 대해 예측 수행
     predictions = [model.predict(user_id, item) for item in items_to_predict]
@@ -88,9 +88,9 @@ def predict_accommodation(model, df, user_id, num, si):
     items_to_predict = df['itemID'].unique()
 
     # 사용자가 방문하지 않은 아이템에 대한 예측 생성
-    # all_items = df['itemID'].unique()
-    # user_items = df[df['userID'] == user_id]['itemID'].unique()
-    # items_to_predict = [item for item in all_items if item not in user_items]
+    all_items = df['itemID'].unique()
+    user_items = df[df['userID'] == user_id]['itemID'].unique()
+    items_to_predict = [item for item in all_items if item not in user_items]
 
     # 각 아이템에 대해 예측 수행
     predictions = [model.predict(user_id, item) for item in items_to_predict]
