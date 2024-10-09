@@ -34,7 +34,7 @@ def main():
   load_dotenv()
   openai_key = os.getenv('OPENAI_API_KEY')
 
-
+        
   # 인자 파싱
   userMessage = sys.argv[1]
   chatId = sys.argv[2]
