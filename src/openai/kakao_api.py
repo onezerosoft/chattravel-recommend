@@ -2,6 +2,7 @@ import requests
 import urllib.parse
 from dotenv import load_dotenv
 import os
+import random
 
 # 기본 키워드 검색 기능
 def kakao_local_search(keyword, num, code):
@@ -44,26 +45,31 @@ def kakao_local_search(keyword, num, code):
   return
 
 
-# 입력으로 들어온 "place"와 가까운 식당과 카페 num개씩 반환
+# 입력으로 들어온 "place"와 가까운 식당과 카페 num개씩 반환 후 랜덤으로 한개 선택
 def search_fnb(region, place):
-  num = 1
+  num = 10
   result = []
 
   try:
     # 카카오 api 호출
-    r_response = kakao_local_search(f"{region} {place} 근처 식당", num, "FD6")
-    c_response = kakao_local_search(f"{region} {place} 근처 카페", num, "CE7")
+    r_response = kakao_local_search(f"{region} {place} 맛집", num, "FD6")
+    c_response = kakao_local_search(f"{region} {place} 카페", num, "CE7")
 
+    r_response = random.sample(r_response,1)
+    c_response = random.sample(c_response,1)
+    print(r_response)
+
+
+    # 호출 실패한 경우 -> 지역이름으로 확대해서 재검색
     if len(r_response) == 0:
-      restaurant = {
-        "place":"",
-        "ratings":"",
-        "reason":"",
-        "address":"",
-        "place_url":""
-      }
-      result.append(restaurant)
-
+      r_response = kakao_local_search(f"{region} 맛집", num, "FD6")
+      r_response = random.sample(r_response,1)
+    
+    if len(c_response) == 0:
+      c_response = kakao_local_search(f"{region} 카페", num, "CE7")
+      c_response = random.sample(c_response,1)
+    
+    
     for r in r_response:
       restaurant = {
         "place":r["place_name"],
@@ -104,4 +110,3 @@ def search_fnb(region, place):
   print(result)
 
   return result
-
