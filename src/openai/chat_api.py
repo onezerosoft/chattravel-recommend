@@ -39,8 +39,8 @@ def main():
   # openai.api_key = openai_key
 
   # with 구문을 사용하여 파일을 열고 닫음
-  # with open(base_path+"openai/openai-key.txt", "r", encoding="utf-8") as file:
-  #     openai_key = file.read().strip()  # .strip()을 사용하여 불필요한 공백이나 줄바꿈 제거
+  with open(base_path+"openai/openai-key.txt", "r", encoding="utf-8") as file:
+      openai_key = file.read().strip()  # .strip()을 사용하여 불필요한 공백이나 줄바꿈 제거
 
   # API 키 설정
   #openai.api_key = openai_key
