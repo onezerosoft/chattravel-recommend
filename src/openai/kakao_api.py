@@ -67,39 +67,26 @@ def search_fnb(region, place):
     if len(c_response) == 0:
       c_response = kakao_local_search(f"{region} 카페", num, "CE7")
       
-    r_response = random.sample(r_response,1)
-    c_response = random.sample(c_response,1)
-    
-    
-    for r in r_response:
-      restaurant = {
-        "place":r["place_name"],
-        "ratings":"",
-        "reason":r["category_name"],
-        "address":r["road_address_name"],
-        "place_url":r["place_url"]
-      }
-      result.append(restaurant)
+    r = random.choice(r_response)
+    c = random.choice(c_response)
 
-    if len(c_response) == 0:
-      cafe = {
-        "place":"",
-        "ratings":"",
-        "reason":"",
-        "address":"",
-        "place_url":""
-      }
-      result.append(cafe)
+    restaurant = {
+      "place":r["place_name"],
+      "ratings":"",
+      "reason":r["category_name"],
+      "address":r["road_address_name"],
+      "place_url":r["place_url"]
+    }
+    result.append(restaurant)
 
-    for c in c_response:
-      cafe = {
-        "place":c["place_name"],
-        "ratings":"",
-        "reason":c["category_name"],
-        "address":c["road_address_name"],
-        "place_url":c["place_url"]
-      }
-      result.append(cafe)
+    cafe = {
+      "place":c["place_name"],
+      "ratings":"",
+      "reason":c["category_name"],
+      "address":c["road_address_name"],
+      "place_url":c["place_url"]
+    }
+    result.append(cafe)
 
 
   except KeyError as e:
