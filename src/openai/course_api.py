@@ -9,6 +9,7 @@ import json
 from dotenv import load_dotenv
 import kakao_api
 import os
+import pandas as pd
 
 base_path = "/home/ubuntu/chattravel-server/chattravel-recommend/src/"
 #base_path = "src/"
@@ -30,31 +31,48 @@ def extract_json_from_text(text):
         print(f"Error parsing JSON: {e}")
         return None
     
+# df에서 장소명에 해당하는 si찾기
+def get_si(place, sido, placeType):
+   # CSV 파일 불러오기
+  current_dir = os.path.dirname(os.path.abspath(__file__))
+  #print("현재 스크립트가 실행 중인 디렉토리:", current_dir)
+
+  # 상대 경로를 사용하여 파일 경로 구성
+  if placeType == "p":
+    path = base_path+"data/preprocessed/place/df_total.csv"
+  if placeType == "a":
+    path = base_path+"data/preprocessed/accomodation/df_total.csv"
+  
+  df = pd.read_csv(path)
+
+  filtered_df = df[df['SIDO'] == sido]
+
+  si_value = filtered_df[filtered_df['itemID'] == place]['SI'].values[0]
+
+  return si_value
+  
+# 특정 Item의 PredictedRating을 찾는 함수
+def predicted_rating(item_name, item_list):
+    for item in item_list:
+        if item["Item"] == item_name:
+            return item["PredictedRating"]
+    return None
+
 
 def main():
-  # # .env 파일에서 환경 변수 읽기
+  # .env 파일에서 환경 변수 읽기
   load_dotenv()
 
   openai_key = os.getenv('OPENAI_API_KEY')
 
-  # # API 키 설정
-  # openai.api_key = openai_key
-
+  # user input 
+  user_id = sys.argv[1] # 사용자 아이디
+  sido = sys.argv[2] # 여행지 시도
+  si = sys.argv[3] # 여행지 시 문자열
+  days = sys.argv[4] # 여행일수
   
-# with 구문을 사용하여 파일을 열고 닫음
-  # with open(base_path+"openai/openai-key.txt", "r", encoding="utf-8") as file:
-  #     openai_key = file.read().strip()  # .strip()을 사용하여 불필요한 공백이나 줄바꿈 제거
 
-  # # API 키 설정
-  # openai.api_key = openai_key
-
-
-  # user input 생성
-  days = sys.argv[1]
-  region = sys.argv[2]
-  userId = sys.argv[3]
-
-  file_path = base_path+f"result/prediction_result_{userId}.json"
+  file_path = base_path+f"result/prediction_result_{user_id}.json"
   with open(file_path, 'r', encoding='utf-8') as file:
     data = json.load(file)
 
@@ -73,13 +91,11 @@ def main():
   - Create the best travel course considering the characteristics of the destination and the distance between the destinations. 
   - Write the reasons for the arrangement of the order within the course for each travel destination. 
   - Write it in Korean.
-  - Write in a bright and kind way.
   - All places in "placeList" must be used.
   - Design the distance between places visited on the same day of the course to be close
-  - Create a "courseTitle" that tactfully represents the entire course and identifies the {region}.
+  - Create a "courseTitle" that tactfully represents the entire course and identifies the {si}.
   - 응답은 다 반말로 친절하게 작성해줘
-  - 각 장소에 대한 주소와 카카오맵 URL도 함께 보내
-  - "accomodation"은 숙소명이야, 간략한 설명과 숙소 주소, 카카오맵 URL도 보내
+  - "accomodation"은 숙소명이야, 이 숙소에 대해 간단한 소개를 반환해줘
   - 내가 준 JSON 형식으로만 대답해
 
   "days" : {days}
@@ -90,26 +106,25 @@ def main():
   If "days" is is 1, format the response as a JSON object with the following structure:
   {{
       "courseTitle": "courseTitle"
-      "accommodation":{{"comment":"간략한 설명", "address":"address1", "place_url":"url1"}}
       "day1": [
-          {{"place":"place1", "ratings":"PredictedRating", "reason":"reason1", "address":"address1", "place_url":"url1"}},
-          {{"place":"place2", "ratings":"PredictedRating", "reason":"reason2", "address":"address2", "place_url":"url2"}},
-          {{"place":"place3", "ratings":"PredictedRating", "reason":"reason3", "address":"address3", "place_url":"url3"}}
+          {{"place":"place1", "reason":"reason1"}},
+          {{"place":"place2", "reason":"reason2"}},
+          {{"place":"place3", "reason":"reason3"}}
       ]
   }}
 
   If "days" is is not 1, format the response as a JSON object with the following structure:
   {{
       "courseTitle": "courseTitle"
-      "accommodation":{{"address":"address1", "place_url":"url1"}}
+      "accomodation": "comment"
       "day1": [
-          {{"place":"place1", "ratings":"PredictedRating", "reason":"reason1", "address": "address1", "place_url":"url1"}},
-          {{"place":"place2", "ratings":"PredictedRating", "reason":"reason2", "address": "address2", "place_url":"url2"}}
+          {{"place":"place1", "reason":"reason1"}},
+          {{"place":"place2", "reason":"reason2"}}
       ],
       "day2": [
-          {{"place":"place1", "ratings":"PredictedRating", "reason":"reason1", "address":"address1", "place_url":"url1"}},
-          {{"place":"place2", "ratings":"PredictedRating", "reason":"reason2", "address":"address2", "place_url":"url2"}},
-          {{"place":"place3", "ratings":"PredictedRating", "reason":"reason3", "address":"address3", "place_url":"url3"}}
+          {{"place":"place1", "reason":"reason1"}},
+          {{"place":"place2", "reason":"reason2"}},
+          {{"place":"place3", "reason":"reason3"}}
       ],
       ...
   }}
@@ -126,16 +141,30 @@ def main():
     ]
   )
   result = extract_json_from_text(completion.choices[0].message.content)
-
-
+  
   # 식당 & 카페 추가 검색 
+  # 개발할거 -> df에서 장소명에 해당하는 si 찾기 & 평점정보
+  response = {}
   for i in range(int(days)):
     day = f"day{i+1}"
 
+    d_response = []
+    for p in result[day]:
+      p_si = get_si(p["place"], sido, "p")
+      ratings = predicted_rating(p["place"], placeList)
+      p_json = {
+        "place":p["place"],
+        "ratings":ratings,
+        "reason":p["reason"],
+        "address":sido+" "+p_si,
+        "place_url":""
+      }
+      d_response.append(p_json)
+
     keword1 = result[day][0]["place"]
-    region1 = result[day][0]["address"].split()[1]
+    region1 = get_si(keword1, sido, "p")
     keword2 = result[day][1]["place"]
-    region2 = result[day][1]["address"].split()[1]
+    region2 = get_si(keword2,sido, "p")
 
     # kakao 검색
     search_result1 = kakao_api.search_fnb(region1, keword1)
@@ -144,29 +173,32 @@ def main():
 
     # 당일치기, 중간날 -> 식당&카페 추가
     if int(days) == 1 or (i >0 and i < int(days)-1):
-      result[day].insert(1, search_result1[0])
-      result[day].insert(2, search_result1[1])
-      result[day].insert(4, search_result2[0])
-      result[day].insert(5, search_result2[1])
+      d_response.insert(1, search_result1[0])
+      d_response.insert(2, search_result1[1])
+      d_response.insert(4, search_result2[0])
+      d_response.insert(5, search_result2[1])
 
     # 첫째날, 마지막날 -> 숙박 추가, 식당&카페 추가
     elif i == 0 or i == int(days) - 1:
+      a_si = get_si(accommodation["Item"], sido, "a")
       accommodation_json = {
         "place":accommodation["Item"],
         "ratings":accommodation["PredictedRating"],
-        "reason":"",
-        "address":result["accommodation"]["address"],
-        "place_url":result["accommodation"]["place_url"]
+        "reason":result["accomodation"],
+        "address":sido+ " "+a_si,
+        "place_url":""
       }
-      result[day].insert(0, accommodation_json)
-      result[day].insert(1, search_result1[0])
-      result[day].insert(2, search_result1[1])
-      result[day].insert(4, search_result2[0])
-      result[day].insert(5, search_result2[1])
+      d_response.insert(0, accommodation_json)
+      d_response.insert(1, search_result1[0])
+      d_response.insert(2, search_result1[1])
+      d_response.insert(4, search_result2[0])
+      d_response.insert(5, search_result2[1])
+      
+    response[day] = d_response
 
 
-  with open(base_path+f"result/course_api_result_{userId}.json", "w", encoding="utf-8") as f:
-        json.dump(result, f, ensure_ascii=False, indent=4)
+  with open(base_path+f"result/course_api_result_{user_id}.json", "w", encoding="utf-8") as f:
+        json.dump(response, f, ensure_ascii=False, indent=4)
 
 #   sys.stdout.reconfigure(encoding='utf-8')
 #   print(json.dumps(result, ensure_ascii=False))
