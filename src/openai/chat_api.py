@@ -31,19 +31,8 @@ def extract_json_from_text(text):
 
 def main():
   # # .env 파일에서 환경 변수 읽기
-  # load_dotenv()
-
-  # openai_key = os.getenv('OPENAI_API_KEY')
-
-  # # API 키 설정
-  # openai.api_key = openai_key
-
-  # with 구문을 사용하여 파일을 열고 닫음
-  with open(base_path+"openai/openai-key.txt", "r", encoding="utf-8") as file:
-      openai_key = file.read().strip()  # .strip()을 사용하여 불필요한 공백이나 줄바꿈 제거
-
-  # API 키 설정
-  #openai.api_key = openai_key
+  load_dotenv()
+  openai_key = os.getenv('OPENAI_API_KEY')
 
 
   # 인자 파싱
@@ -109,7 +98,7 @@ def main():
   '''
 
   # GPT-4 모델 사용
-  client = OpenAI()
+  client = OpenAI(api_key=openai_key)
 
   completion = client.chat.completions.create(
     model="gpt-4o-mini",
