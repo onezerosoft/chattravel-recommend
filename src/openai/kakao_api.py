@@ -55,11 +55,6 @@ def search_fnb(region, place):
     r_response = kakao_local_search(f"{region} {place} 맛집", num, "FD6")
     c_response = kakao_local_search(f"{region} {place} 카페", num, "CE7")
 
-    r_response = random.sample(r_response,1)
-    c_response = random.sample(c_response,1)
-    print(r_response)
-
-
     # 호출 실패한 경우 -> 지역이름으로 확대해서 재검색
     if len(r_response) == 0:
       r_response = kakao_local_search(f"{region} 맛집", num, "FD6")
@@ -68,6 +63,9 @@ def search_fnb(region, place):
     if len(c_response) == 0:
       c_response = kakao_local_search(f"{region} 카페", num, "CE7")
       c_response = random.sample(c_response,1)
+
+    r_response = random.sample(r_response,1)
+    c_response = random.sample(c_response,1)
     
     
     for r in r_response:
