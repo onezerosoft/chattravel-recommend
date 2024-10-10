@@ -145,6 +145,7 @@ def main():
   # 식당 & 카페 추가 검색 
   # 개발할거 -> df에서 장소명에 해당하는 si 찾기 & 평점정보
   response = {}
+  response["courseTitle"] = result["courseTitle"]
   for i in range(int(days)):
     day = f"day{i+1}"
 
