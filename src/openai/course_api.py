@@ -8,6 +8,7 @@ import sys
 import json
 from dotenv import load_dotenv
 import kakao_api
+import os
 
 base_path = "/home/ubuntu/chattravel-server/chattravel-recommend/src/"
 #base_path = "src/"
@@ -32,9 +33,9 @@ def extract_json_from_text(text):
 
 def main():
   # # .env 파일에서 환경 변수 읽기
-  # load_dotenv()
+  load_dotenv()
 
-  # openai_key = os.getenv('OPENAI_API_KEY')
+  openai_key = os.getenv('OPENAI_API_KEY')
 
   # # API 키 설정
   # openai.api_key = openai_key
@@ -115,7 +116,7 @@ def main():
   '''
 
   # GPT-4 모델 사용
-  client = OpenAI()
+  client = OpenAI(api_key=openai_key)
 
   completion = client.chat.completions.create(
     model="gpt-4o-mini",
