@@ -54,8 +54,8 @@ def load_data(si):
 def predict_place(model, df, user_id, num, si):
     
     # 사용자가 방문한 아이템 중 si가 벗어나는 것 제거
-    df = df['itemID'].unique()
-    items_to_predict = df[df['SI'] == si]
+    df = df[df['SI'].isin(si)]
+    items_to_predict = df['itemID'].unique()
 
     # 사용자가 방문하지 않은 아이템에 대한 예측 생성
     # all_items = df['itemID'].unique()
@@ -85,8 +85,8 @@ def predict_place(model, df, user_id, num, si):
 
 def predict_accommodation(model, df, user_id, num, si):
     # 사용자가 방문한 아이템 중 si가 벗어나는 것 제거
-    df = df['itemID'].unique()
-    items_to_predict = df[df['SI'] == si]
+    df = df[df['SI'].isin(si)]
+    items_to_predict = df['itemID'].unique()
 
     # 사용자가 방문하지 않은 아이템에 대한 예측 생성
     # all_items = df['itemID'].unique()
