@@ -64,13 +64,11 @@ def main():
 
   "request":
   - Read the "userMessage", select the service the user wants from the "functionList".
-  - If "function" is 1 or 2 or 3, create a changed course, keeping the format of "currentCourse" intact.
-  - Find a real recommended destination and complete the course
+  - If "function" is 1 or 2 or 3, create a changed course, keeping the format of "currentCourse".
+  - You have to create an actual travel course that meets the needs of the user
   - If "function" is 4 or 5, Return that information.
-  - Don't give me information you don't know
   - If you can't find the service requested by the user (function: 6), use "role" to generate an appropriate response.
   - Write it in Korean.
-  - Write in a bright and kind way.
   - 응답은 다 반말로 친절하게 작성해줘
   
   "userMessage" : {userMessage}
