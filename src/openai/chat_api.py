@@ -65,7 +65,7 @@ def main():
   "request":
   - Read the "userMessage", select the service the user wants from the "functionList".
   - If "function" is 1 or 2 or 3, create a changed course, keeping the format of "currentCourse".
-  - You have to create an actual travel course that meets the needs of the user
+  - 여행지나 카페를 새로 찾을때에는 실제로 있는 장소로 알려줘
   - If "function" is 4 or 5, Return that information.
   - If you can't find the service requested by the user (function: 6), use "role" to generate an appropriate response.
   - Write it in Korean.
