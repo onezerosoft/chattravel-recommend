@@ -75,7 +75,9 @@ def search_fnb(region, place):
       "ratings":"",
       "reason":r["category_name"],
       "address":r["road_address_name"],
-      "place_url":r["place_url"]
+      "place_url":r["place_url"],
+      "SIDO":"",
+      "SI":""
     }
     result.append(restaurant)
 
@@ -84,7 +86,10 @@ def search_fnb(region, place):
       "ratings":"",
       "reason":c["category_name"],
       "address":c["road_address_name"],
-      "place_url":c["place_url"]
+      "place_url":c["place_url"],
+      "SIDO":"",
+      "SI":""
+    
     }
     result.append(cafe)
 
