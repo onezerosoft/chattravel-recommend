@@ -31,32 +31,14 @@ def extract_json_from_text(text):
         print(f"Error parsing JSON: {e}")
         return None
     
-# df에서 장소명에 해당하는 si찾기
-def get_si(place, sido, placeType):
-   # CSV 파일 불러오기
-  current_dir = os.path.dirname(os.path.abspath(__file__))
-  #print("현재 스크립트가 실행 중인 디렉토리:", current_dir)
-
-  # 상대 경로를 사용하여 파일 경로 구성
-  if placeType == "p":
-    path = base_path+"data/preprocessed/place/df_total.csv"
-  if placeType == "a":
-    path = base_path+"data/preprocessed/accomodation/df_total.csv"
   
-  df = pd.read_csv(path)
-
-  filtered_df = df[df['SIDO'] == sido]
-
-  si_value = filtered_df[filtered_df['itemID'] == place]['SI'].values[0]
-
-  return si_value
-  
-# 특정 Item의 PredictedRating을 찾는 함수
-def predicted_rating(item_name, item_list):
+# 특정 Item의 정보를 찾는 함수
+def get_data(item_name, item_list):
     for item in item_list:
         if item["Item"] == item_name:
-            return item["PredictedRating"]
+            return item["SI"], item["SIDO"], item["PredictedRating"]
     return None
+
 
 
 def main():
@@ -95,6 +77,7 @@ def main():
   - Design the distance between places visited on the same day of the course to be close
   - Create a "courseTitle" that tactfully represents the entire course and identifies the {si}.
   - 응답은 다 반말로 친절하게 작성해줘
+  - 말투는 즐겁고 귀여운 느낌을 해줘 
   - "accomodation"은 숙소명이야, 이 숙소에 대해 간단한 소개를 반환해줘
   - 내가 준 JSON 형식으로만 대답해
 
@@ -151,21 +134,22 @@ def main():
 
     d_response = []
     for p in result[day]:
-      p_si = get_si(p["place"], sido, "p")
-      ratings = predicted_rating(p["place"], placeList)
+      p_si , p_sido, ratings = get_data(p["place"], placeList)
       p_json = {
         "place":p["place"],
         "ratings":ratings,
         "reason":p["reason"],
-        "address":sido+" "+p_si,
+        "address":p_sido+" "+p_si,
+        "SIDO": p_sido,
+        "SI" : p_si,
         "place_url":""
       }
       d_response.append(p_json)
 
-    keword1 = result[day][0]["place"]
-    region1 = get_si(keword1, sido, "p")
-    keword2 = result[day][1]["place"]
-    region2 = get_si(keword2,sido, "p")
+    keword1 = d_response[0]["place"]
+    region1 = d_response[0]["SI"]
+    keword2 = d_response[1]["place"]
+    region2 = d_response[1]["SI"]
 
     # kakao 검색
     search_result1 = kakao_api.search_fnb(region1, keword1)
@@ -181,12 +165,13 @@ def main():
 
     # 첫째날, 마지막날 -> 숙박 추가, 식당&카페 추가
     elif i == 0 or i == int(days) - 1:
-      a_si = get_si(accommodation["Item"], sido, "a")
       accommodation_json = {
         "place":accommodation["Item"],
         "ratings":accommodation["PredictedRating"],
         "reason":result["accomodation"],
-        "address":sido+ " "+a_si,
+        "address":accommodation["SIDO"]+ " "+accommodation["SI"],
+        "SIDO": accommodation["SIDO"],
+        "SI" : accommodation["SI"],
         "place_url":""
       }
       d_response.insert(0, accommodation_json)

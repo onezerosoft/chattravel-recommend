@@ -12,7 +12,6 @@ base_path = '/home/ubuntu/chattravel-server/chattravel-recommend/src/'
 
 def load_model(region):
 
-    #print(os.getcwd())
     
     if region == 'E':  # 수도권
         place_model_path = os.path.join(base_path, 'model', 'place', 'svd_model_capital.pkl')
@@ -43,7 +42,7 @@ def load_model(region):
 def load_data(si):
     
     df1 = pd.read_csv(base_path+'data/preprocessed/place/df_total.csv')
-    df2 = pd.read_csv(base_path+'/data/preprocessed/accomodation/df_total.csv')
+    df2 = pd.read_csv(base_path+'data/preprocessed/accomodation/df_total.csv')
         
     df1 = df1[df1['SI'].isin(si)]
     df2 = df2[df2['SI'].isin(si)]
@@ -68,7 +67,6 @@ def predict_place(model, df, user_id, num, si):
 
     # 예측된 점수로 정렬하여 상위 N개의 아이템 추천
     top_n_predictions = sorted(predictions, key=lambda x: x.est, reverse=True)[:30]
-    print(top_n_predictions)
     top_n_predictions = random.sample(top_n_predictions, num)
 
     # 추천 결과 
@@ -155,7 +153,7 @@ def insert_dummy_data(df1, df2, code, p_user_id,a_user_id, styleList):
 
 
 def main():
-    
+    print("Prediction start")
     user_id = sys.argv[1] # 사용자 아이디
     sido = sys.argv[2] # 여행지 시도
     si = re.split(r',\s*', sys.argv[3].strip('[]')) # 여행지 시(군) 리스트
@@ -200,9 +198,25 @@ def main():
     
     # 여행지 추천 모델
     place_predictions = predict_place(place_model, df1, p_user_id, place_num, si)
+    print("Place prediction done.")
+
 
     # 숙박 장소 추천 모델
     accommodation_predictions = predict_accommodation(accommodation_model, df2, a_user_id, accom_num, si)
+    print("accomodation prediction done.")
+
+    # 여행지와 숙박장소의 SIDO, SI 데이터를 함께 반환
+    
+    for p in place_predictions:
+       filtered_row = df1[df1["itemID"] == p["Item"]]
+       p["SIDO"] = filtered_row['SIDO'].values[0]
+       p["SI"] = filtered_row['SI'].values[0]
+        
+    for a in accommodation_predictions:
+       filtered_row = df2[df2['itemID'] == a["Item"]]
+       a["SIDO"] = filtered_row['SIDO'].values[0]
+       a["SI"] = filtered_row['SI'].values[0]
+
 
     result = {
        "place": place_predictions,
@@ -212,7 +226,7 @@ def main():
     with open(base_path+f"result/prediction_result_{user_id}.json", "w", encoding="utf-8") as f:
       json.dump(result, f, ensure_ascii=False, indent=4)
 
-    print(result)
+#    print(result)
 #     sys.stdout.reconfigure(encoding='utf-8')
 #     print(json.dumps(result, ensure_ascii=False))
 
