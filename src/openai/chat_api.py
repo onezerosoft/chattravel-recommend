@@ -34,7 +34,7 @@ def main():
   load_dotenv()
   openai_key = os.getenv('OPENAI_API_KEY')
 
-        
+
   # 인자 파싱
   userMessage = sys.argv[1]
   chatId = sys.argv[2]
@@ -76,8 +76,21 @@ def main():
 
   Format the response as a JSON object with the following structure:
   첨부한 "course_format" 형식을 반드시 지켜서 작성해
-  If "function" is 1 or 2 or 3, 
+  If "function" is 1 or 2, 
   {{
+    "function": "functionNumber"
+    "response": {course_format}
+  }}
+
+  If "function" is 3,
+    example
+      problem: “아쿠아플라넷 여수랑 웅천해수욕장 위치 바꿔줘”
+      CoT
+        1. places 배열에서 아쿠아플라넷 여수 객체의 인덱스를 확인한다.
+        2. places 배열에서 웅천해수욕장 객체의 인덱스를 확인한다.
+        3. 두 인덱스에 있는 두 객체의 위치를 바꾼다
+
+   {{
     "function": "functionNumber"
     "response": {course_format}
   }}
